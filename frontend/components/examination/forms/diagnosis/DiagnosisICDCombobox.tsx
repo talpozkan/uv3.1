@@ -148,12 +148,14 @@ export const DiagnosisICDCombobox = React.memo(({
                                     <div
                                         key={item.kodu}
                                         className="px-3 py-2 text-xs hover:bg-blue-50 cursor-pointer border-b border-slate-50 last:border-0"
-                                        onClick={() => {
+                                        onMouseDown={(e) => {
+                                            e.preventDefault(); // Blur olayını ve focus kaybını engelle
                                             setLocalValue(item.adi || "");
                                             setLocalCode(item.kodu);
                                             onValueChange(item.adi || "");
                                             onCodeChange(item.kodu);
                                             setShowSuggestions(false);
+                                            setIsFocused(false);
                                         }}
                                     >
                                         <div className="flex items-center justify-between gap-2">

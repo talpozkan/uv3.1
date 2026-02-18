@@ -72,7 +72,10 @@ export const MedicalHistorySection: React.FC<MedicalHistoryFormProps> = ({ value
                     value={value.allerjiler || ""}
                     disabled={readOnly}
                     onChange={(e) => onChange({ ...value, allerjiler: e.target.value })}
-                    className="bg-yellow-50 border-yellow-200 min-h-[80px] resize-y font-mono text-sm text-amber-700"
+                    className={cn(
+                        "bg-blue-50 border-blue-200 min-h-[80px] resize-y font-mono text-sm transition-colors",
+                        value.allerjiler ? "text-red-600 font-bold" : "text-slate-600"
+                    )}
                     placeholder="İlaç, gıda, lateks vb..."
                 />
             </div>

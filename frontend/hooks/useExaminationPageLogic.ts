@@ -49,6 +49,7 @@ export interface ExaminationFormData {
     idrar_bas_zorluk_text: string;
     kesik_idrar_yapma_text: string;
     ipss_skor: string;
+    ipss_qol: string;
     ozgecmis: string;
     soygecmis: string;
     kullandigi_ilaclar: string;
@@ -158,6 +159,7 @@ export const useExaminationPageLogic = (patientId: string) => {
         idrar_bas_zorluk_text: "",
         kesik_idrar_yapma_text: "",
         ipss_skor: "0",
+        ipss_qol: "0",
         ozgecmis: "",
         soygecmis: "",
         kullandigi_ilaclar: "",

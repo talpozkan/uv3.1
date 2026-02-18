@@ -155,6 +155,7 @@ export interface Muayene {
     takip_notu?: string;
     sistem_sorgu?: string;
     ipss_skor?: string;
+    ipss_qol?: string;
     iief_ef_skor?: string;
     iief_ef_answers?: string;
     ozgecmis?: string;
@@ -257,6 +258,7 @@ export interface MuayeneCreate {
     takip_notu?: string;
     sistem_sorgu?: string;
     ipss_skor?: string;
+    ipss_qol?: string;
     iief_ef_skor?: string;
     iief_ef_answers?: string;
     ozgecmis?: string;

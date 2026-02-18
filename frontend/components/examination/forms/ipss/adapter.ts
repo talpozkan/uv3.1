@@ -10,7 +10,7 @@ export const ipssAdapter = {
         ipss5: formData.projeksiyon_azalma || '0',
         ipss6: formData.idrar_bas_zorluk || '0',
         ipss7: formData.nokturi || '0',
-        ipss_qol: '0', // Not mapped in legacy explicitly
+        ipss_qol: formData.ipss_qol || '0',
         // ipss_total is derived, but can be passed if we want. It's optional in schema.
     }),
     toLegacy: (data: IPSSData): Partial<ExaminationFormData> => ({
@@ -21,5 +21,6 @@ export const ipssAdapter = {
         projeksiyon_azalma: data.ipss5,
         idrar_bas_zorluk: data.ipss6,
         nokturi: data.ipss7,
+        ipss_qol: data.ipss_qol,
     })
 };

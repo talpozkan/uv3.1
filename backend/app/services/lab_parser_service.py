@@ -26,6 +26,83 @@ def normalize_turkish(text: str) -> str:
         result = result.replace(tr_char, ascii_char)
     return result
 
+# Comprehensive list of test names and synonyms
+# Format: (OfficialName, [Synonyms])
+# NOTE: Synonyms are stored in normalized ASCII form (Turkish chars converted)
+# The matching logic normalizes both input and synonyms for comparison
+TEST_DEFINITIONS = [
+    ("Glukoz", ["glukoz", "aks", "glucose", "kan sekeri", "seker"]),
+    ("HbA1c", ["hba1c", "hemoglobin a1c", "glikozile hemoglobin"]),
+    ("Insulin", ["insulin", "insulın"]),
+    ("Ure", ["ure", "urea", "bun"]),
+    ("Kreatinin", ["kreatinin", "creatinine", "creat"]),
+    ("eGFR", ["egfr", "gfr"]),
+    ("Urik Asit", ["urik asit", "uric acid"]),
+    ("Total Bilirubin", ["total bilirubin", "t.bilirubin", "t-bilirubin"]),
+    ("Direkt Bilirubin", ["direkt bilirubin", "d.bilirubin", "d-bilirubin"]),
+    ("Indirekt Bilirubin", ["indirekt bilirubin", "i.bilirubin", "i-bilirubin"]),
+    ("AST", ["ast", "sgot"]),
+    ("ALT", ["alt", "sgpt"]),
+    ("GGT", ["ggt", "g-gt"]),
+    ("ALP", ["alp", "alkalen fosfataz"]),
+    ("LDH", ["ldh", "laktat dehidrogenaz"]),
+    ("Amilaz", ["amilaz", "amylase"]),
+    ("Lipaz", ["lipaz", "lipase"]),
+    ("Total Protein", ["total protein"]),
+    ("Albumin", ["albumin"]),
+    ("Sodyum", ["sodyum", "sodium", "Na"]),
+    ("Potasyum", ["potasyum", "potassium", "K"]),
+    ("Klor", ["klor", "chloride", "Cl"]),
+    ("Kalsiyum", ["kalsiyum", "calcium", "Ca"]),
+    ("Magnezyum", ["magnezyum", "magnesium", "Mg"]),
+    ("Fosfor", ["fosfor", "phosphorus", "P"]),
+    ("Demir", ["demir", "iron", "Fe"]),
+    ("Ferritin", ["ferritin"]),
+    ("TSH", ["tsh"]),
+    ("Serbest T3", ["serbest t3", "st3", "free t3", "s.t3", "f-t3"]),
+    ("Serbest T4", ["serbest t4", "st4", "free t4", "s.t4", "f-t4"]),
+    
+    # Updated PSA Definitions (Serbest MUST come before Total to prevent partial matching)
+    ("PSA (SERBEST)", [
+        "psa (free)", "serbest psa", "free psa", "psa serbest", "psa free",
+        "serbest prostat spesifik antijen", "free prostat spesifik antijen",
+        "prostat spesifik antijen free", "prostat spesifik antijen serbest",
+        "spsa", "f-psa", "fpsa"
+    ]),
+    ("PSA (TOTAL)", [
+        "psa (total)", "total psa", "psa total", "total prostat spesifik antijen",
+        "prostat spesifik antijen", "psa", "tpsa", "t-psa", "t-psa"
+    ]),
+
+    ("Parathormon", ["parathormon", "pth"]),
+    ("Vitamin D", ["vitamin d", "vit d", "25-oh vit d", "d vitamini"]),
+    ("Vitamin B12", ["vitamin b12", "vit b12", "b12 vitamini"]),
+    ("Folat", ["folat", "folate", "folik asit"]),
+    ("CRP", ["crp", "c-reaktif protein"]),
+    ("Sedimantasyon", ["sedimantasyon", "sedim", "esr"]),
+    ("WBC", ["wbc", "lokosit", "leukocyte", "akyuvar"]),
+    ("RBC", ["rbc", "eritrosit", "erythrocyte", "alyuvar"]),
+    ("HGB", ["hgb", "hemoglobin", "hbg"]),
+    ("HCT", ["hct", "hematokrit", "hematocrit"]),
+    ("PLT", ["plt", "trombosit", "platelet"]),
+    ("MCV", ["mcv"]),
+    ("MCH", ["mch"]),
+    ("MCHC", ["mchc"]),
+    ("RDW", ["rdw"]),
+    ("MPV", ["mpv"]),
+    ("NE#", ["ne#", "neu#", "neut#", "notr#", "notrofil#"]),
+    ("LY#", ["ly#", "lym#", "lenf#", "lenfosit#"]),
+    ("MO#", ["mo#", "mon#", "mono#", "monosit#"]),
+    ("EO#", ["eo#", "eos#", "eoz#", "eozinofil#"]),
+    ("BA#", ["ba#", "bas#", "baz#", "bazofil#"]),
+    ("NE%", ["ne%", "neu%", "neut%", "notr%", "notrofil%"]),
+    ("LY%", ["ly%", "lym%", "lenf%", "lenfosit%"]),
+    ("INR", ["inr"]),
+    ("PT", ["pt", "protrombin zamani"]),
+    ("aPTT", ["aptt"]),
+    ("pH", ["ph"]),
+]
+
 def normalize_test_name(name: str) -> str:
     """
     Standardize test name for consistent storage and comparison.
@@ -33,12 +110,23 @@ def normalize_test_name(name: str) -> str:
     - Normalizes Turkish characters
     - Strips whitespace
     - Removes extra spaces
+    - Maps to standardized names from TEST_DEFINITIONS
     """
     if not name:
         return name
     normalized = normalize_turkish(name.lower().strip())
     # Remove extra whitespace
     normalized = re.sub(r'\s+', ' ', normalized)
+    
+    # Check against known test definitions for standardization
+    for test_key, synonyms in TEST_DEFINITIONS:
+        for syn in synonyms:
+             if normalized == syn:
+                 return test_key
+             # Should we check for partial matches? 
+             # Table parser usually gives "Total PSA" which standardizes to "total psa".
+             # So exact match against normalized synonyms is good.
+    
     return normalized
 
 class ParsedLabResult(BaseModel):
@@ -141,71 +229,8 @@ class LabParserService:
     def parse_narrative(text: str, report_date: Optional[datetime.date] = None) -> LabParserResponse:
         results = []
         
-        # Comprehensive list of test names and synonyms
-        # Format: (OfficialName, [Synonyms])
-        # NOTE: Synonyms are stored in normalized ASCII form (Turkish chars converted)
-        # The matching logic normalizes both input and synonyms for comparison
-        TEST_DEFINITIONS = [
-            ("Glukoz", ["glukoz", "aks", "tks", "glucose", "kan sekeri", "seker"]),
-            ("HbA1c", ["hba1c", "hemoglobin a1c", "glikozile hemoglobin"]),
-            ("Insulin", ["insulin", "insulın"]),
-            ("Ure", ["ure", "urea", "bun"]),
-            ("Kreatinin", ["kreatinin", "creatinine", "creat"]),
-            ("eGFR", ["egfr", "gfr"]),
-            ("Urik Asit", ["urik asit", "uric acid"]),
-            ("Total Bilirubin", ["total bilirubin", "t.bilirubin", "t-bilirubin"]),
-            ("Direkt Bilirubin", ["direkt bilirubin", "d.bilirubin", "d-bilirubin"]),
-            ("Indirekt Bilirubin", ["indirekt bilirubin", "i.bilirubin", "i-bilirubin"]),
-            ("AST", ["ast", "sgot"]),
-            ("ALT", ["alt", "sgpt"]),
-            ("GGT", ["ggt", "g-gt"]),
-            ("ALP", ["alp", "alkalen fosfataz"]),
-            ("LDH", ["ldh", "laktat dehidrogenaz"]),
-            ("Amilaz", ["amilaz", "amylase"]),
-            ("Lipaz", ["lipaz", "lipase"]),
-            ("Total Protein", ["total protein"]),
-            ("Albumin", ["albumin"]),
-            ("Sodyum", ["sodyum", "sodium", "Na"]),
-            ("Potasyum", ["potasyum", "potassium", "K"]),
-            ("Klor", ["klor", "chloride", "Cl"]),
-            ("Kalsiyum", ["kalsiyum", "calcium", "Ca"]),
-            ("Magnezyum", ["magnezyum", "magnesium", "Mg"]),
-            ("Fosfor", ["fosfor", "phosphorus", "P"]),
-            ("Demir", ["demir", "iron", "Fe"]),
-            ("Ferritin", ["ferritin"]),
-            ("TSH", ["tsh"]),
-            ("Serbest T3", ["serbest t3", "st3", "free t3", "s.t3", "f-t3"]),
-            ("Serbest T4", ["serbest t4", "st4", "free t4", "s.t4", "f-t4"]),
-            ("Total PSA", ["total psa", "psa", "tpsa", "t-psa", "prostat spesifik antijen"]),
-            ("Serbest PSA", ["serbest psa", "spsa", "f-psa", "fpsa"]),
-            ("Parathormon", ["parathormon", "pth"]),
-            ("Vitamin D", ["vitamin d", "vit d", "25-oh vit d", "d vitamini"]),
-            ("Vitamin B12", ["vitamin b12", "vit b12", "b12 vitamini"]),
-            ("Folat", ["folat", "folate", "folik asit"]),
-            ("CRP", ["crp", "c-reaktif protein"]),
-            ("Sedimantasyon", ["sedimantasyon", "sedim", "esr"]),
-            ("WBC", ["wbc", "lokosit", "leukocyte", "akyuvar"]),
-            ("RBC", ["rbc", "eritrosit", "erythrocyte", "alyuvar"]),
-            ("HGB", ["hgb", "hemoglobin", "hbg"]),
-            ("HCT", ["hct", "hematokrit", "hematocrit"]),
-            ("PLT", ["plt", "trombosit", "platelet"]),
-            ("MCV", ["mcv"]),
-            ("MCH", ["mch"]),
-            ("MCHC", ["mchc"]),
-            ("RDW", ["rdw"]),
-            ("MPV", ["mpv"]),
-            ("NE#", ["ne#", "neu#", "neut#", "notr#", "notrofil#"]),
-            ("LY#", ["ly#", "lym#", "lenf#", "lenfosit#"]),
-            ("MO#", ["mo#", "mon#", "mono#", "monosit#"]),
-            ("EO#", ["eo#", "eos#", "eoz#", "eozinofil#"]),
-            ("BA#", ["ba#", "bas#", "baz#", "bazofil#"]),
-            ("NE%", ["ne%", "neu%", "neut%", "notr%", "notrofil%"]),
-            ("LY%", ["ly%", "lym%", "lenf%", "lenfosit%"]),
-            ("INR", ["inr"]),
-            ("PT", ["pt", "protrombin zamani"]),
-            ("aPTT", ["aptt"]),
-            ("pH", ["ph"]),
-        ]
+
+        # Old TEST_DEFINITIONS removed - now using global constant
 
         lines = text.split('\n')
         i = 0
