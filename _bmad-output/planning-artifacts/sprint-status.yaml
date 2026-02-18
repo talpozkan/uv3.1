@@ -1,0 +1,40 @@
+sprint_name: "Sprint 1 - Sharded Backend Transformation"
+status: "in_progress"
+started_at: "2026-01-30"
+epics:
+  - id: 1
+    title: "Güvenli Veri Göçü ve Bütünlük Doğrulaması (Safe Migration)"
+    status: "in_progress"
+    stories:
+      - id: "1.1"
+        title: "Bütünlük Doğrulama Motoru (Integrity Engine)"
+        status: "todo"
+      - id: "1.2"
+        title: "Shard'lanmış Veri Aktarım Betiği (Migration Script)"
+        status: "todo"
+      - id: "1.3"
+        title: "Dry Run Simülasyonu ve Fark Raporu (Diff Report)"
+        status: "todo"
+  - id: 2
+    title: "Shard'lanmış Hasta Verisi Erişimi (Sharded Data Access)"
+    status: "todo"
+    stories:
+      - id: "2.1"
+        title: "Birleşik Hasta Profili ve Legacy API Uyumu"
+        status: "todo"
+      - id: "2.2"
+        title: "Otomatik Denetim ve PII Koruması"
+        status: "todo"
+      - id: "2.3"
+        title: "Dayanıklı Atomik Silme"
+        status: "todo"
+  - id: 3
+    title: "Dayanıklı Rapor Oluşturma (Resilient Reporting)"
+    status: "todo"
+    stories:
+      - id: "3.1"
+        title: "Kesintisiz Klinik Rapor Üretimi"
+        status: "todo"
+      - id: "3.2"
+        title: "Standartlaştırılmış PyMuPDF Rapor Motoru"
+        status: "todo"

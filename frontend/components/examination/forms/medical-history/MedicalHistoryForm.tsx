@@ -1,0 +1,115 @@
+import React from "react";
+import { MedicalHistoryData } from "./schema";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+import { SystemQueryCombobox } from "@/components/ui/system-query-combobox";
+
+interface MedicalHistoryFormProps {
+    value: MedicalHistoryData;
+    onChange: (data: MedicalHistoryData) => void;
+    readOnly?: boolean;
+    onOpenEDDrugs?: () => void;
+}
+
+// Separate section for Özgeçmiş (used standalone in ClinicalCard)
+export const PastHistorySection: React.FC<MedicalHistoryFormProps> = ({ value, onChange, readOnly }) => (
+    <div className="p-1">
+        <Textarea
+            value={value.ozgecmis}
+            disabled={readOnly}
+            onChange={(e) => onChange({ ...value, ozgecmis: e.target.value })}
+            className="min-h-[120px] bg-transparent border-0 resize-y text-sm font-mono p-0 focus-visible:ring-0 placeholder:text-slate-300"
+            placeholder="Kronik hastalıklar, ameliyatlar..."
+        />
+    </div>
+);
+
+// Main Tıbbi Geçmiş section with integrated habits (per design mockup)
+export const MedicalHistorySection: React.FC<MedicalHistoryFormProps> = ({ value, onChange, readOnly }) => (
+    <div className="space-y-6">
+        {/* Kullandığı İlaçlar */}
+        <div className="space-y-3">
+            <div className="flex items-center justify-between">
+                <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">Kullandığı İlaçlar</Label>
+                <div className="flex items-center gap-2 bg-slate-50/50 px-2 py-0.5 rounded-full border border-slate-100">
+                    <input
+                        type="checkbox"
+                        id="kan-sulandirici-main"
+                        disabled={readOnly}
+                        checked={value.kan_sulandirici}
+                        onChange={(e) => onChange({ ...value, kan_sulandirici: e.target.checked })}
+                        className="w-3.5 h-3.5 text-blue-600 rounded focus:ring-blue-500 disabled:opacity-50"
+                    />
+                    <label htmlFor="kan-sulandirici-main" className={cn("text-[10px] font-black px-2.5 py-1 rounded shadow-sm cursor-pointer uppercase transition-all", value.kan_sulandirici ? "bg-yellow-400 text-slate-900" : "bg-slate-200 text-slate-500")}>Kan Sulandırıcı (+)</label>
+                </div>
+            </div>
+            <Textarea
+                value={value.kullandigi_ilaclar}
+                disabled={readOnly}
+                onChange={(e) => onChange({ ...value, kullandigi_ilaclar: e.target.value })}
+                className="min-h-[100px] bg-slate-50 border-slate-200 resize-y font-mono text-sm"
+                placeholder="Aktif ilaç listesi..."
+            />
+        </div>
+
+        {/* Aile Hikayesi & Allerjiler - Side by Side */}
+        <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+                <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">Aile Hikayesi</Label>
+                <Textarea
+                    value={value.soygecmis}
+                    disabled={readOnly}
+                    onChange={(e) => onChange({ ...value, soygecmis: e.target.value })}
+                    className="bg-slate-50 border-slate-200 min-h-[80px] resize-y font-mono text-sm"
+                    placeholder="Baba DM, HT, PCa vs..."
+                />
+            </div>
+
+            <div className="space-y-2">
+                <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">Allerjiler</Label>
+                <Textarea
+                    value={value.allerjiler || ""}
+                    disabled={readOnly}
+                    onChange={(e) => onChange({ ...value, allerjiler: e.target.value })}
+                    className="bg-yellow-50 border-yellow-200 min-h-[80px] resize-y font-mono text-sm text-amber-700"
+                    placeholder="İlaç, gıda, lateks vb..."
+                />
+            </div>
+        </div>
+
+        {/* Alışkanlıklar - Stacked vertically */}
+        <div className="space-y-3 pt-2 border-t border-slate-100">
+            <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">Alışkanlıklar</Label>
+            <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-600 font-medium uppercase min-w-[60px]">Sigara</span>
+                    <SystemQueryCombobox
+                        label="Sigara"
+                        value={value.sigara || ""}
+                        onChange={(val) => onChange({ ...value, sigara: val })}
+                        options={["Kullanmıyor", "Bırakmış", "1 Paket/Yıl", "5 Paket/Yıl", "10 Paket/Yıl", "20 Paket/Yıl", "30+ Paket/Yıl"]}
+                        placeholder="Paket/Yıl"
+                        disabled={readOnly}
+                    />
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-600 font-medium uppercase min-w-[60px]">Alkol</span>
+                    <SystemQueryCombobox
+                        label="Alkol"
+                        value={value.alkol || ""}
+                        onChange={(val) => onChange({ ...value, alkol: val })}
+                        options={["Kullanmıyor", "Sosyal", "Haftada < 3 gün", "Haftada > 3 gün", "Hergün düzenli", "Alkolizm"]}
+                        placeholder="Seçiniz..."
+                        disabled={readOnly}
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+// Backward compat export (not used in page.tsx anymore)
+export const MedicalHistoryForm: React.FC<MedicalHistoryFormProps> = (props) => (
+    <MedicalHistorySection {...props} />
+);

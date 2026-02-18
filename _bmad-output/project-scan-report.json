@@ -1,0 +1,49 @@
+{
+    "project_root": "/Users/alp/Documents/antigravity/UrologV3",
+    "version": "1.0.0",
+    "scan_type": "exhausted",
+    "timestamp": "2026-02-01T23:14:00+03:00",
+    "project": {
+        "name": "urolog_v3",
+        "type": "web-application",
+        "architecture": "monorepo"
+    },
+    "tech_stack": {
+        "frontend": {
+            "framework": "Next.js 16",
+            "language": "TypeScript 5",
+            "ui_library": "shadcn/ui + TailwindCSS 4",
+            "state_management": "Zustand + TanStack Query v5",
+            "build_tool": "Next.js Build"
+        },
+        "backend": {
+            "framework": "FastAPI",
+            "language": "Python 3.11",
+            "database": "PostgreSQL 15 (via SQLAlchemy 2 + AsyncPG + Alembic)",
+            "cache": "Redis",
+            "auth": "JWT + OAuth2"
+        },
+        "infrastructure": {
+            "containerization": "Docker + Docker Compose",
+            "reverse_proxy": "Nginx",
+            "deployment": "Shell Scripts (Debian Target)"
+        }
+    },
+    "modules": [
+        {
+            "name": "Patient Management",
+            "path": "backend/app/routers/patients.py",
+            "status": "active"
+        },
+        {
+            "name": "Clinical Examinations",
+            "path": "backend/app/routers/examinations.py",
+            "status": "active"
+        },
+        {
+            "name": "Finance",
+            "path": "backend/app/routers/finance.py",
+            "status": "active"
+        }
+    ]
+}

@@ -1,0 +1,47 @@
+generated: 2026-02-02
+project: UroLog_Bmad
+project_key: URO
+tracking_system: file-system
+story_location: {project-root}/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created, ready for development
+#   - in-progress: Developer actively working on implementation
+#   - review: Implementation complete, ready for review
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+
+development_status:
+  epic-1: done
+  1-1-integrity-engine: done
+  1-2-migration-script: done
+  1-3-diff-report: done
+  epic-1-retrospective: done
+
+  epic-2: done
+  2-1-unified-profile-and-legacy-compliance: done
+  2-2-automated-audit-and-pii-shield: done
+  2-3-resilient-atomic-soft-delete: done
+  epic-2-retrospective: done
+
+  epic-3: done
+  3-1-non-stop-clinical-pdf: done
+  3-2-unified-pdf-engine: done
+  epic-3-retrospective: done
+
+  epic-4: in-progress
+  4-1-ai-scribe-core: done
+  4-2-intelligent-lab-analysis: in-progress
+  4-3-voice-interface: backlog
+  epic-4-retrospective: optional
