@@ -67,6 +67,12 @@ export const useSettingsStore = create<SettingsState>()(
         {
             name: 'settings-storage',
             version: 1,
+            migrate: (persistedState: any, version: number) => {
+                // Determine if state needs migration. 
+                // For now, we'll simply return the persisted state or a default if version is mismatched.
+                // In a real migration scenario, we would transform the state here.
+                return persistedState as SettingsState;
+            },
         }
     )
 );

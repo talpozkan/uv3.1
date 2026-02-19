@@ -109,6 +109,8 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
+# Export BACKEND_URL for local development (Host -> Docker Container)
+export BACKEND_URL="http://localhost:8000"
 npm run dev
 
 # If npm run dev stops unexpectedly
