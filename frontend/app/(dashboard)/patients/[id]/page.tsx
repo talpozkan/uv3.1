@@ -127,7 +127,7 @@ export default function PatientDetailPage() {
             </div>
 
             {/* Right Sidebar - Transaction History */}
-            <aside className="w-[340px] bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col shrink-0 h-full overflow-hidden">
+            <aside className="w-[260px] bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col shrink-0 h-full overflow-hidden">
                 <div className="px-4 py-3 border-b border-slate-100 flex items-center gap-2 bg-gradient-to-r from-slate-50 to-white">
                     <History className="w-4 h-4 text-slate-500" />
                     <h3 className="font-bold text-sm text-slate-800">İşlem Geçmişi</h3>

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, List
 from datetime import date, datetime
 from uuid import UUID
 
@@ -38,6 +38,7 @@ class PatientLegacyResponse(BaseModel):
     etiketler: Optional[str] = None
     kayit_notu: Optional[str] = None
     protokol_no: Optional[str] = None
+    iletisim_kisi: Optional[List[dict]] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
     

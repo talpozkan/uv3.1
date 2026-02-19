@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Plus, Trash2, Edit, LogOut, Printer, Calendar, Info, FlaskConical } from 'lucide-react';
+import { Plus, Trash2, Edit, LogOut, Printer, Calendar, Info, FlaskConical, Users, X } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -81,6 +82,11 @@ const patientSchema = z.object({
     personel_ids: z.string().optional(),
     etiketler: z.string().optional(),
     kayit_notu: z.string().optional(),
+    iletisim_kisi: z.array(z.object({
+        yakinlik: z.string(),
+        isim: z.string(),
+        telefon: z.string().optional(),
+    })).optional().nullable(),
 }).superRefine((data, ctx) => {
     if (!data.is_passport && data.tc_kimlik && data.tc_kimlik.length > 0) {
         if (!validateTCKN(data.tc_kimlik)) {
@@ -109,12 +115,16 @@ export function PatientForm({ initialData, onSubmit, isEditing = false, onDelete
     const router = useRouter();
     const [editMode, setEditMode] = useState(!initialData || isEditing);
     const [appointmentDialogOpen, setAppointmentDialogOpen] = useState(false);
+    const [contactPopoverOpen, setContactPopoverOpen] = useState(false);
+    const [newContact, setNewContact] = useState({ yakinlik: '', isim: '', telefon: '' });
 
 
     const sanitizedInitialData: any = initialData ? Object.fromEntries(
         Object.entries(initialData).map(([key, value]) => [
             key,
-            value === null || value === undefined ? '' : String(value)
+            value === null || value === undefined ? ''
+                : (typeof value === 'object' || typeof value === 'boolean') ? value
+                    : String(value)
         ])
     ) : undefined;
 
@@ -148,7 +158,8 @@ export function PatientForm({ initialData, onSubmit, isEditing = false, onDelete
             dil: 'Türkçe',
             personel_ids: '',
             etiketler: '',
-            kayit_notu: ''
+            kayit_notu: '',
+            iletisim_kisi: [],
         },
     });
 
@@ -213,7 +224,9 @@ export function PatientForm({ initialData, onSubmit, isEditing = false, onDelete
             const sanitized: any = Object.fromEntries(
                 Object.entries(initialData).map(([key, value]) => [
                     key,
-                    value === null || value === undefined ? '' : String(value)
+                    value === null || value === undefined ? ''
+                        : (typeof value === 'object' || typeof value === 'boolean') ? value
+                            : String(value)
                 ])
             );
 
@@ -574,10 +587,95 @@ export function PatientForm({ initialData, onSubmit, isEditing = false, onDelete
 
                         {/* RIGHT COLUMN - CONTACT INFO */}
                         <div className="md:col-span-5 space-y-2 border-l pl-4 border-slate-100">
-                            <h3 className="text-red-500 font-bold uppercase text-[10px] mb-2">İLETİŞİM BİLGİLERİ</h3>
+                            <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-red-500 font-bold uppercase text-[10px]">İLETİŞİM BİLGİLERİ</h3>
+                                {editMode && (
+                                    <Popover open={contactPopoverOpen} onOpenChange={setContactPopoverOpen}>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="ghost" size="sm" className="h-6 px-2 text-[9px] text-teal-600 hover:text-teal-700 hover:bg-teal-50 gap-1">
+                                                <Users className="h-3 w-3" />
+                                                + İLETİŞİM KİŞİSİ
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-72 p-3" align="end">
+                                            <div className="space-y-3">
+                                                <h4 className="text-xs font-bold text-slate-700">Yeni İletişim Kişisi</h4>
+                                                <div className="space-y-2">
+                                                    <Select value={newContact.yakinlik} onValueChange={(v) => setNewContact(prev => ({ ...prev, yakinlik: v }))}>
+                                                        <SelectTrigger className="h-7 text-xs">
+                                                            <SelectValue placeholder="Yakınlık seçin" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectItem value="Eşi">Eşi</SelectItem>
+                                                            <SelectItem value="Anne">Anne</SelectItem>
+                                                            <SelectItem value="Baba">Baba</SelectItem>
+                                                            <SelectItem value="Oğlu">Oğlu</SelectItem>
+                                                            <SelectItem value="Kızı">Kızı</SelectItem>
+                                                            <SelectItem value="Kardeşi">Kardeşi</SelectItem>
+                                                            <SelectItem value="Arkadaş">Arkadaş</SelectItem>
+                                                            <SelectItem value="Yakını">Yakını</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <Input
+                                                        placeholder="Ad Soyad"
+                                                        value={newContact.isim}
+                                                        onChange={(e) => setNewContact(prev => ({ ...prev, isim: e.target.value }))}
+                                                        className="h-7 text-xs"
+                                                    />
+                                                    <Input
+                                                        placeholder="+90 XXX XXX XX XX"
+                                                        value={newContact.telefon}
+                                                        onChange={(e) => setNewContact(prev => ({ ...prev, telefon: formatPhoneNumber(e.target.value) }))}
+                                                        className="h-7 text-xs"
+                                                    />
+                                                    <Button
+                                                        size="sm"
+                                                        className="w-full h-7 text-xs bg-teal-600 hover:bg-teal-700"
+                                                        disabled={!newContact.yakinlik || !newContact.isim}
+                                                        onClick={() => {
+                                                            const raw = form.getValues('iletisim_kisi');
+                                                            const current = Array.isArray(raw) ? raw : [];
+                                                            form.setValue('iletisim_kisi', [...current, { ...newContact }], { shouldDirty: true });
+                                                            setNewContact({ yakinlik: '', isim: '', telefon: '' });
+                                                            setContactPopoverOpen(false);
+                                                        }}
+                                                    >
+                                                        Ekle
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            </div>
+
+                            {/* Contact Persons Badges */}
+                            {(() => {
+                                const raw = form.watch('iletisim_kisi');
+                                const contacts = Array.isArray(raw) ? raw : [];
+                                if (contacts.length === 0) return null;
+                                return (
+                                    <div className="flex flex-wrap gap-1.5 mb-2">
+                                        {contacts.map((c: { yakinlik: string; isim: string; telefon?: string }, idx: number) => (
+                                            <Badge key={idx} variant="outline" className="text-[10px] py-0.5 px-2 bg-teal-50 border-teal-200 text-teal-700 gap-1">
+                                                <span className="font-bold">{c.yakinlik}:</span> {c.isim}{c.telefon ? ` (${c.telefon})` : ''}
+                                                {editMode && (
+                                                    <X
+                                                        className="h-3 w-3 ml-1 cursor-pointer hover:text-red-500 transition-colors"
+                                                        onClick={() => {
+                                                            const raw = form.getValues('iletisim_kisi');
+                                                            const current = Array.isArray(raw) ? raw : [];
+                                                            form.setValue('iletisim_kisi', current.filter((_: unknown, i: number) => i !== idx), { shouldDirty: true });
+                                                        }}
+                                                    />
+                                                )}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                );
+                            })()}
 
                             <div className="space-y-2">
-                                <div className="text-[9px] text-red-500 font-semibold mb-1">TELEFON VE E-POSTA BİLGİLERİ</div>
 
                                 <div className="grid grid-cols-12 gap-1 items-center">
                                     <FormLabel className="col-span-4 text-[10px] font-bold text-slate-600 uppercase">MOBİL TELEFON</FormLabel>

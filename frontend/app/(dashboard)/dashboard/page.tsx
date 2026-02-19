@@ -406,7 +406,7 @@ export default function DashboardPage() {
                 {/* Right Column: Patients & Recent Logs */}
                 <div className="space-y-6">
                     {/* Patient Search & List Card */}
-                    <Card className="border-white shadow-sm border-t-4 border-t-indigo-500 overflow-hidden">
+                    <Card className="border-white shadow-sm border-t-4 border-t-cyan-500 overflow-hidden">
                         <CardHeader className="bg-white border-b border-slate-50 pb-4">
                             <div className="flex items-center justify-between">
                                 <div>

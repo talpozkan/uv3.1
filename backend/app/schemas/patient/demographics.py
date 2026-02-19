@@ -1,7 +1,7 @@
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 from uuid import UUID
 from datetime import date, datetime
-from typing import Optional, Any, Union, Annotated
+from typing import Optional, Any, Union, Annotated, List
 
 class PatientDemographicsBase(BaseModel):
     model_config = ConfigDict(extra='ignore')
@@ -44,6 +44,7 @@ class PatientDemographicsBase(BaseModel):
     etiketler: Optional[str] = None
     kayit_notu: Optional[str] = None
     protokol_no: Optional[str] = None
+    iletisim_kisi: Optional[List[dict]] = None
 
     @field_validator("sms_izin", "email_izin", mode='before')
     @classmethod
@@ -99,6 +100,7 @@ class PatientDemographicsUpdate(BaseModel):
     etiketler: Optional[str] = None
     kayit_notu: Optional[str] = None
     protokol_no: Optional[str] = None
+    iletisim_kisi: Optional[List[dict]] = None
 
 class PatientDemographics(PatientDemographicsBase):
     id: UUID

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func, Date, Text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from app.models.base_class import Base
@@ -45,6 +46,8 @@ class ShardedPatientDemographics(Base):
     dil = Column(String(20), nullable=True)
     etiketler = Column(Text, nullable=True)
     kayit_notu = Column(Text, nullable=True)
+    personel_ids = Column(String(255), nullable=True)
+    iletisim_kisi = Column(JSONB, nullable=True, default=list, comment="Emergency/alt contact persons [{yakinlik, isim, telefon}]")
 
     # Audit & Soft Delete
     is_deleted = Column(Boolean, default=False, nullable=False)

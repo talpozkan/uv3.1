@@ -31,7 +31,6 @@ export function PatientTimeline({ patientId }: PatientTimelineProps) {
     const allowedTypes = [
         'appointment', 'appointment_cancelled',
         'examination',
-        'lab', 'lab_sperm', 'lab_urine', 'lab_urodynamic', 'lab_uroflow',
         'followup'
     ];
 
@@ -61,12 +60,11 @@ export function PatientTimeline({ patientId }: PatientTimelineProps) {
     }
 
     return (
-        <div className="py-2 px-1">
+        <div className="py-1 px-1">
             <div className="relative pl-0">
-                {/* Vertical Line - Positioned to align with dots */}
-                <div className="absolute left-[95px] top-4 bottom-4 w-[2px] bg-slate-100" />
+                <div className="absolute left-[72px] top-3 bottom-3 w-[2px] bg-slate-100" />
 
-                <div className="space-y-4">
+                <div className="space-y-1">
                     {filteredTimeline.map((item) => (
                         <TimelineRow key={item.id} item={item} />
                     ))}
@@ -105,48 +103,29 @@ function TimelineRow({ item }: { item: TimelineItem }) {
     const style = colors[item.type] || colors.other;
 
     return (
-        <div className="group flex gap-4 relative">
+        <div className="group flex gap-2 relative">
             {/* Left Column: Date */}
-            <div className="w-[85px] text-right pt-1.5 shrink-0">
-                <span className="text-slate-400 text-[11px] font-bold tracking-tight uppercase">{dateStr}</span>
+            <div className="w-[62px] text-right pt-1 shrink-0">
+                <span className="text-slate-400 text-[10px] font-bold tracking-tight">{dateStr}</span>
             </div>
 
             {/* Middle: Dot */}
-            <div className="relative z-10 flex flex-col items-center pt-1.5 shrink-0">
+            <div className="relative z-10 flex flex-col items-center pt-1 shrink-0">
                 <div className={clsx(
-                    "w-3.5 h-3.5 rounded-full bg-white border-[3px] shadow-sm z-10 transition-transform group-hover:scale-125",
+                    "w-2.5 h-2.5 rounded-full bg-white border-[2px] shadow-sm z-10",
                     style.dot
                 )} />
             </div>
 
-            {/* Right Column: Content Card */}
-            <div className="flex-1 pb-4 min-w-0">
-                <div className="bg-transparent group-hover:bg-slate-50/50 p-1.5 rounded-lg transition-colors">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">{item.title}</div>
-
-                    <div className={clsx("text-xs font-bold leading-tight line-clamp-2", style.txt)}>
-                        {item.description}
+            {/* Right Column: Content */}
+            <div className="flex-1 pb-2 min-w-0">
+                <div className="p-1 rounded transition-colors group-hover:bg-slate-50/50">
+                    <div className={clsx("text-[11px] font-semibold leading-tight truncate", style.txt)}>
+                        {item.description || item.title}
                     </div>
-
-                    <div className="text-[10px] text-slate-500 mt-1 flex flex-wrap gap-x-3 gap-y-0.5">
-                        {item.personnel && (
-                            <div className="flex items-center gap-1">
-                                <span className="text-slate-400">Dr:</span>
-                                <span className="font-semibold">{item.personnel}</span>
-                            </div>
-                        )}
-                        {item.time && (
-                            <div className="flex items-center gap-1">
-                                <span className="text-slate-400">Saat:</span>
-                                <span className="font-semibold">{item.time}</span>
-                            </div>
-                        )}
-                        {item.amount !== undefined && item.amount !== null && (
-                            <div className="bg-emerald-50 text-emerald-700 font-bold px-1.5 rounded">
-                                {item.amount.toLocaleString('tr-TR')} TL
-                            </div>
-                        )}
-                    </div>
+                    {item.personnel && (
+                        <div className="text-[9px] text-slate-400 mt-0.5 truncate">Dr. {item.personnel}</div>
+                    )}
                 </div>
             </div>
         </div>

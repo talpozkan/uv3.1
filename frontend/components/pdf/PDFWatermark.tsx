@@ -12,22 +12,30 @@ interface PDFWatermarkProps {
 export const PDFWatermark: React.FC<PDFWatermarkProps> = ({ patient }) => {
     const maskedTc = patient.tc_kimlik ? `****${patient.tc_kimlik.substring(4)}` : "-";
 
-    // Generate semi-random grid-based watermarks to avoid overlapping
+    // Seeded PRNG (mulberry32) — deterministic positions, random font sizes
     const watermarks = React.useMemo(() => {
+        let seed = 0xDEAD_BEEF;
+        const rand = () => {
+            seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+            let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+            t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+
         const items = [];
-        const rows = 4;
-        const cols = 3;
-        const cellWidth = 595 / cols;
-        const cellHeight = 842 / rows;
+        const rows = 3;
+        const cols = 2;
+        const cellW = 595 / cols;
+        const cellH = 842 / rows;
 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 items.push({
-                    top: (r * cellHeight) + (Math.random() * (cellHeight - 100)) + 50,
-                    left: (c * cellWidth) + (Math.random() * (cellWidth - 150)),
-                    rotation: -45, // Strictly parallel diagonal
-                    fontSize: Math.random() > 0.5 ? 20 : 25, // Only 20 or 25 px
-                    opacity: 0.06, // Clean subtle look
+                    top: r * cellH + rand() * cellH,
+                    left: c * cellW + rand() * cellW * 0.6,
+                    rotation: -45,
+                    fontSize: rand() > 0.5 ? 20 : 30,
+                    opacity: 0.06,
                 });
             }
         }
