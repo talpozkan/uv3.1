@@ -1,0 +1,55 @@
+services:
+  db:
+    container_name: ${PROJECT_NAME}_db
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      # GÜVENLİK NOTU:
+      # Production ortamında bu hassas veriler asla doğrudan dosyaya yazılmamalıdır.
+      # Docker Secrets veya CI/CD pipeline üzerinden inject edilmelidir.
+      POSTGRES_USER: ${DB_USER:-emr_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password}
+      POSTGRES_DB: ${DB_NAME:-${PROJECT_NAME}_db}
+    volumes:
+      # Veri kalıcılığı (Persistence) için host makinesine mount işlemi
+      - db_data:/var/lib/postgresql/data
+
+    # Veritabanının gerçekten bağlantı kabul edip etmediğini kontrol eder
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-emr_admin} -d ${DB_NAME:-${PROJECT_NAME}_db}" ]
+      interval: 5s # Her 5 saniyede bir kontrol et
+      timeout: 5s # Cevap gelmezse 5 saniye sonra zaman aşımına uğrat
+      retries: 5 # 5 kere başarısız olursa servisi 'unhealthy' işaretle
+    ports:
+      - "5441:5432"
+
+  backend:
+    container_name: ${PROJECT_NAME}_backend
+    build: .
+    restart: always
+    # Gunicorn Konfigürasyonu:
+    # -w 4: 4 adet Worker Process başlatır. (Formül: 2 x CPU Core + 1)
+    # -k uvicorn.workers.UvicornWorker: Asyncio desteği için Uvicorn worker sınıfı.
+    # --bind 0.0.0.0:8000: Dış dünyadan gelen istekleri dinle.
+    command: gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --timeout 300 --access-logfile - --error-logfile -
+    # env_file:
+    #   - .env
+    environment:
+      - DB_USER=${DB_USER:-emr_admin}
+      - DB_PASSWORD=${DB_PASSWORD:-secure_password}
+      - DB_NAME=${DB_NAME:-${PROJECT_NAME}_db}
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      db:
+        # Backend servisi, DB servisi "healthy" durumuna geçmeden BAŞLAMAZ.
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - ../03.db_import:/data_import
+    ports:
+      - "8000:8000"
+
+volumes:
+  db_data:
+    name: ${PROJECT_NAME}_db_data
