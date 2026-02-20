@@ -10,8 +10,9 @@ YELLOW='\033[1;33m'
 
 echo -e "${BLUE}🚀 UroLOG Master Deploy Başlatılıyor...${NC}"
 
-# 0. Dizin Çözümleme (Sembolik link desteği için)
-PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# 0. Dizin Çözümleme (Gerçek dizini bul - Sembolik link takibi)
+REAL_PATH=$(readlink -f "$0")
+PROJECT_DIR=$(dirname "$REAL_PATH")
 cd "$PROJECT_DIR"
 echo -e "${BLUE}📍 Çalışma Dizini: $PROJECT_DIR${NC}"
 echo -e "${YELLOW}📦 [1/4] Güvenlik yedeği alınıyor...${NC}"
