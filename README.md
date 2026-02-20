@@ -1,9 +1,9 @@
 # UroLOG EMR Sistemi
 
 > **Versiyon:** 2.6  
-> **Tarih:** 2026-01-23  
+> **Tarih:** 2026-02-19
 > **Kod Adı:** *Enterprise Edition*
-
+MASTERDEPLOY updated
 UroLOG, üroloji klinikleri için özel olarak tasarlanmış, **kurumsal düzeyde** bir Elektronik Tıbbi Kayıt (EMR) sistemidir. Hasta takibi, muayene kayıtları, laboratuvar sonuçları, ameliyat notları, finans yönetimi ve detaylı raporlama gibi süreçleri tek bir platformda birleştirerek klinik iş akışını optimize eder.
 
 ---
@@ -361,4 +361,5 @@ Sorularınız veya önerileriniz için:
 ---
 
 *Son Güncelleme: 2026-01-23*
+
 # uv3.1
