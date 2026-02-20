@@ -128,6 +128,16 @@ export function PatientForm({ initialData, onSubmit, isEditing = false, onDelete
         ])
     ) : undefined;
 
+    // Parse iletisim_kisi: may arrive as JSON string from server
+    if (sanitizedInitialData) {
+        const raw = sanitizedInitialData.iletisim_kisi;
+        if (typeof raw === 'string') {
+            try { sanitizedInitialData.iletisim_kisi = JSON.parse(raw); } catch { sanitizedInitialData.iletisim_kisi = []; }
+        } else if (!Array.isArray(raw)) {
+            sanitizedInitialData.iletisim_kisi = [];
+        }
+    }
+
     // Split address if it contains newline
     if (sanitizedInitialData && sanitizedInitialData.adres) {
         const parts = sanitizedInitialData.adres.split('\n');
@@ -229,6 +239,14 @@ export function PatientForm({ initialData, onSubmit, isEditing = false, onDelete
                             : String(value)
                 ])
             );
+
+            // Parse iletisim_kisi: may arrive as JSON string from server
+            const rawContact = sanitized.iletisim_kisi;
+            if (typeof rawContact === 'string') {
+                try { sanitized.iletisim_kisi = JSON.parse(rawContact); } catch { sanitized.iletisim_kisi = []; }
+            } else if (!Array.isArray(rawContact)) {
+                sanitized.iletisim_kisi = [];
+            }
 
             // Split address for form
             if (sanitized.adres) {
