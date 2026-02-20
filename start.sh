@@ -109,8 +109,11 @@ if [ ! -d "node_modules" ]; then
     npm install
 fi
 
-# Export BACKEND_URL for local development (Host -> Docker Container)
+# Export variables for local development
+export NEXT_PUBLIC_GIT_SHA=$(git rev-parse --short HEAD 2>/dev/null || echo "dev")
 export BACKEND_URL="http://localhost:8000"
+
+echo -e "${BLUE}🏷️ Versiyon: v$NEXT_PUBLIC_GIT_SHA${NC}"
 npm run dev
 
 # If npm run dev stops unexpectedly
