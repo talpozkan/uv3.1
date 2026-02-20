@@ -305,7 +305,7 @@ function SmartCalendar({
                         return <ChevronLeftIcon className={cn("size-4", chevCls)} {...chevProps} />
                     if (orientation === "right")
                         return <ChevronRightIcon className={cn("size-4", chevCls)} {...chevProps} />
-                    return null
+                    return <></>
                 },
                 MonthCaption: SmartCaption,
                 DayButton: SmartCalendarDayButton,
