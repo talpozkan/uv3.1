@@ -27,7 +27,7 @@ import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { SystemQueryCombobox } from "@/components/clinical/system-query-combobox";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { SmartCalendar as Calendar } from "@/components/ui/SmartCalendar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";

@@ -18,7 +18,7 @@ import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 
 import { Button } from "@/components/ui/button";
 import { isResultAbnormal } from "@/lib/lab-utils";
-import { Calendar } from "@/components/ui/calendar";
+import { SmartCalendar as Calendar } from "@/components/ui/SmartCalendar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
