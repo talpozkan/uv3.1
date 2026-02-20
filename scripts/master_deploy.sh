@@ -42,6 +42,11 @@ fi
 
 # 3. Build & Deploy: Docker
 echo -e "${YELLOW}🐳 [3/4] Tüm stack yeniden derleniyor ve başlatılıyor...${NC}"
+
+# Git SHA'yı al ve export et (Frontend versiyon numarası için)
+export GIT_SHA=$(git rev-parse --short HEAD)
+echo -e "${BLUE}🏷️ Versiyon: v$GIT_SHA${NC}"
+
 docker compose -f docker-compose.prod.yml build --no-cache
 docker compose -f docker-compose.prod.yml up -d --remove-orphans
 if [ $? -eq 0 ]; then
