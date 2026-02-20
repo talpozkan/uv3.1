@@ -286,9 +286,18 @@ export const useExaminationPageLogic = (patientId: string) => {
             nokturi: exam.nokturi || "0",
 
             projeksiyon_azalma_sq: sq.projeksiyonAzalmaSQ || mapLegacy(exam.projeksiyon_azalma) || "Yok",
-            sigara: sq.sigara || (exam.aliskanliklar || "").match(/Sigara: (.*?)(;|$)/)?.[1]?.trim() || "",
-            alkol: sq.alkol || (exam.aliskanliklar || "").match(/Alkol: (.*?)(;|$)/)?.[1]?.trim() || "",
-            sosyal: sq.sosyal || (exam.aliskanliklar || "").match(/Sosyal: (.*?)(;|$)/)?.[1]?.trim() || "",
+            sigara: (() => {
+                const val = sq.sigara || (exam.aliskanliklar || "").match(/Sigara: (.*?)(;|$)/)?.[1]?.trim() || "";
+                return val === "-" ? "" : val;
+            })(),
+            alkol: (() => {
+                const val = sq.alkol || (exam.aliskanliklar || "").match(/Alkol: (.*?)(;|$)/)?.[1]?.trim() || "";
+                return val === "-" ? "" : val;
+            })(),
+            sosyal: (() => {
+                const val = sq.sosyal || (exam.aliskanliklar || "").match(/Sosyal: (.*?)(;|$)/)?.[1]?.trim() || "";
+                return val === "-" ? "" : val;
+            })(),
 
             pollakiuri_text: sq.pollakiuriText || mapLegacy(exam.pollakiuri) || "Yok",
             nokturi_text: sq.nokturiText || mapLegacy(exam.nokturi) || "Yok",
@@ -448,29 +457,38 @@ export const useExaminationPageLogic = (patientId: string) => {
                 allerjiler: findLatest(e => e.allerjiler) || "",
                 kan_sulandirici: latestKanSulandirici,
 
-                sigara: findLatest(e => {
-                    let sq: any = {};
-                    if (e.sistem_sorgu && e.sistem_sorgu.startsWith("{")) {
-                        try { sq = JSON.parse(e.sistem_sorgu); } catch { }
-                    }
-                    return sq?.sigara || (e.aliskanliklar || "").match(/Sigara: (.*?)(;|$)/)?.[1]?.trim();
-                }) || "",
+                sigara: (() => {
+                    const val = findLatest(e => {
+                        let sq: any = {};
+                        if (e.sistem_sorgu && e.sistem_sorgu.startsWith("{")) {
+                            try { sq = JSON.parse(e.sistem_sorgu); } catch { }
+                        }
+                        return sq?.sigara || (e.aliskanliklar || "").match(/Sigara: (.*?)(;|$)/)?.[1]?.trim();
+                    }) || "";
+                    return val === "-" ? "" : val;
+                })(),
 
-                alkol: findLatest(e => {
-                    let sq: any = {};
-                    if (e.sistem_sorgu && e.sistem_sorgu.startsWith("{")) {
-                        try { sq = JSON.parse(e.sistem_sorgu); } catch { }
-                    }
-                    return sq?.alkol || (e.aliskanliklar || "").match(/Alkol: (.*?)(;|$)/)?.[1]?.trim();
-                }) || "",
+                alkol: (() => {
+                    const val = findLatest(e => {
+                        let sq: any = {};
+                        if (e.sistem_sorgu && e.sistem_sorgu.startsWith("{")) {
+                            try { sq = JSON.parse(e.sistem_sorgu); } catch { }
+                        }
+                        return sq?.alkol || (e.aliskanliklar || "").match(/Alkol: (.*?)(;|$)/)?.[1]?.trim();
+                    }) || "";
+                    return val === "-" ? "" : val;
+                })(),
 
-                sosyal: findLatest(e => {
-                    let sq: any = {};
-                    if (e.sistem_sorgu && e.sistem_sorgu.startsWith("{")) {
-                        try { sq = JSON.parse(e.sistem_sorgu); } catch { }
-                    }
-                    return sq?.sosyal || (e.aliskanliklar || "").match(/Sosyal: (.*?)(;|$)/)?.[1]?.trim();
-                }) || "",
+                sosyal: (() => {
+                    const val = findLatest(e => {
+                        let sq: any = {};
+                        if (e.sistem_sorgu && e.sistem_sorgu.startsWith("{")) {
+                            try { sq = JSON.parse(e.sistem_sorgu); } catch { }
+                        }
+                        return sq?.sosyal || (e.aliskanliklar || "").match(/Sosyal: (.*?)(;|$)/)?.[1]?.trim();
+                    }) || "";
+                    return val === "-" ? "" : val;
+                })(),
             }));
             toast.info("Son muayene verileri otomatik aktarıldı.");
         } else {
@@ -550,7 +568,7 @@ export const useExaminationPageLogic = (patientId: string) => {
             tani5: formData.tani5, tani5_kodu: formData.tani5_kodu,
             oneriler: formData.oneriler,
             sonuc: formData.sonuc,
-            aliskanliklar: `Sigara: ${formData.sigara || "-"}; Alkol: ${formData.alkol || "-"}; Sosyal: ${formData.sosyal || "-"}`,
+            aliskanliklar: `Sigara: ${formData.sigara || ""}; Alkol: ${formData.alkol || ""}; Sosyal: ${formData.sosyal || ""}`,
             tedavi: formData.tedavi, recete: formData.recete,
             erektil_islev: formData.erektil_islev, ejakulasyon: formData.ejakulasyon,
             mshq: formData.mshq,

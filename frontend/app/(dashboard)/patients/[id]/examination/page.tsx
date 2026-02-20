@@ -232,10 +232,14 @@ export default function ExaminationPage() {
                             </ClinicalCard>
                         </div>
 
-                        {/* Tanı ve Sonuç */}
-                        <ClinicalCard title="Tanı ve Sonuç" icon={Tag} iconClassName="text-green-600">
-                            <DiagnosisForm value={diagnosisAdapter.toNew(formData)} onChange={(d) => setFormData(prev => ({ ...prev, ...diagnosisAdapter.toLegacy(d) }))} readOnly={!isEditing} patientId={patientId} onOpenPrescription={() => dialogs.setPrescriptionPopoverOpen(true)} />
-                        </ClinicalCard>
+                        {/* Tanı ve Sonuç - DiagnosisForm handles its own layout */}
+                        <DiagnosisForm
+                            value={diagnosisAdapter.toNew(formData)}
+                            onChange={(d) => setFormData(prev => ({ ...prev, ...diagnosisAdapter.toLegacy(d) }))}
+                            readOnly={!isEditing}
+                            patientId={patientId}
+                            onOpenPrescription={() => dialogs.setPrescriptionPopoverOpen(true)}
+                        />
 
                         {/* Save Bar - Non-sticky */}
                         <div className="flex items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 mt-6">

@@ -10,7 +10,7 @@ interface PDFWatermarkProps {
 }
 
 export const PDFWatermark: React.FC<PDFWatermarkProps> = ({ patient }) => {
-    const maskedTc = patient.tc_kimlik ? `****${patient.tc_kimlik.substring(4)}` : "-";
+    const tcKimlik = patient.tc_kimlik || "-";
 
     // Seeded PRNG (mulberry32) — deterministic positions, random font sizes
     const watermarks = React.useMemo(() => {
@@ -59,7 +59,7 @@ export const PDFWatermark: React.FC<PDFWatermarkProps> = ({ patient }) => {
                         {patient.ad} {patient.soyad}
                     </Text>
                     <Text style={{ fontSize: wm.fontSize * 0.7, fontWeight: 'bold', color: '#000', textAlign: 'center', marginTop: 2 }}>
-                        {maskedTc}
+                        {tcKimlik}
                     </Text>
                 </View>
             ))}

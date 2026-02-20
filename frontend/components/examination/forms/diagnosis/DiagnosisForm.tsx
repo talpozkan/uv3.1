@@ -137,7 +137,7 @@ export const DiagnosisForm: React.FC<DiagnosisFormProps> = ({
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                onClick={() => updateField("tedavi", value.tedavi + "\n\n[DİYET ÖNERİLERİ]\n- Bol su tüketin\n- Tuzdan kaçının")}
+                                onClick={() => window.open(`/print/recommendations/diyet?patientId=${patientId}`, '_blank')}
                                 className="h-7 text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border-orange-200"
                             >
                                 🍊 Diyet
@@ -155,7 +155,7 @@ export const DiagnosisForm: React.FC<DiagnosisFormProps> = ({
                                 type="button"
                                 variant="outline"
                                 size="sm"
-                                onClick={() => updateField("tedavi", value.tedavi + "\n\n[AAM ÖNERİSİ]\n- Aktif izlem programı uygulanacak")}
+                                onClick={() => window.open(`/print/recommendations/aam?patientId=${patientId}`, '_blank')}
                                 className="h-7 text-xs font-bold text-yellow-700 bg-yellow-50 hover:bg-yellow-100 border-yellow-200"
                             >
                                 🌟 AAM
@@ -168,6 +168,15 @@ export const DiagnosisForm: React.FC<DiagnosisFormProps> = ({
                                 className="h-7 text-xs font-bold text-green-700 bg-green-50 hover:bg-green-100 border-green-200"
                             >
                                 🍀 HPV
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => window.open(`/print/recommendations/mens_health_diet?patientId=${patientId}`, '_blank')}
+                                className="h-7 text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 border-blue-200"
+                            >
+                                🚀 ED Diyet
                             </Button>
                         </div>
                     </div>

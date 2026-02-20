@@ -180,6 +180,13 @@ async def full_sync():
         }
         await sync_table(conn, "finans_islemler", "sharded_finance_islemler", finance_map, schema="finance")
 
+        # 6b. Photos -> clinical.sharded_clinical_fotograflar
+        photo_map = {
+            "id": "s.id", "hasta_id": "s.hasta_id", "tarih": "s.tarih",
+            "dosya_yolu": "s.dosya_yolu", "kategori": "s.kategori", "notlar": "s.notlar"
+        }
+        await sync_table(conn, "fotograf_arsivi", "sharded_clinical_fotograflar", photo_map, schema="clinical")
+
         # 7. Additional Clinical Tables
         istirahat_map = {
             "id": "s.id", "hasta_id": "s.hasta_id", "tarih": "s.tarih",

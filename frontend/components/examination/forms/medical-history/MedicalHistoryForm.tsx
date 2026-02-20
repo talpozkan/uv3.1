@@ -20,7 +20,7 @@ export const PastHistorySection: React.FC<MedicalHistoryFormProps> = ({ value, o
             disabled={readOnly}
             onChange={(e) => onChange({ ...value, ozgecmis: e.target.value })}
             className="min-h-[120px] bg-transparent border-0 resize-y text-sm font-mono p-0 focus-visible:ring-0 placeholder:text-slate-300"
-            placeholder="Kronik hastalıklar, ameliyatlar..."
+            placeholder="Hastalıklar, ameliyatlar..."
         />
     </div>
 );
@@ -31,7 +31,7 @@ export const MedicalHistorySection: React.FC<MedicalHistoryFormProps> = ({ value
         {/* Kullandığı İlaçlar */}
         <div className="space-y-3">
             <div className="flex items-center justify-between">
-                <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">Kullandığı İlaçlar</Label>
+                <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">İlaçlar</Label>
                 <div className="flex items-center gap-2 bg-slate-50/50 px-2 py-0.5 rounded-full border border-slate-100">
                     <input
                         type="checkbox"
@@ -49,7 +49,7 @@ export const MedicalHistorySection: React.FC<MedicalHistoryFormProps> = ({ value
                 disabled={readOnly}
                 onChange={(e) => onChange({ ...value, kullandigi_ilaclar: e.target.value })}
                 className="min-h-[100px] bg-slate-50 border-slate-200 resize-y font-mono text-sm"
-                placeholder="Aktif ilaç listesi..."
+                placeholder="İlaç listesi..."
             />
         </div>
 
@@ -62,7 +62,7 @@ export const MedicalHistorySection: React.FC<MedicalHistoryFormProps> = ({ value
                     disabled={readOnly}
                     onChange={(e) => onChange({ ...value, soygecmis: e.target.value })}
                     className="bg-slate-50 border-slate-200 min-h-[80px] resize-y font-mono text-sm"
-                    placeholder="Baba DM, HT, PCa vs..."
+                    placeholder="DM, HT, PCa vs..."
                 />
             </div>
 
@@ -81,32 +81,26 @@ export const MedicalHistorySection: React.FC<MedicalHistoryFormProps> = ({ value
             </div>
         </div>
 
-        {/* Alışkanlıklar - Stacked vertically */}
+        {/* Alışkanlıklar */}
         <div className="space-y-3 pt-2 border-t border-slate-100">
             <Label className="text-xs text-slate-500 uppercase tracking-wider font-bold">Alışkanlıklar</Label>
-            <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-600 font-medium uppercase min-w-[60px]">Sigara</span>
-                    <SystemQueryCombobox
-                        label="Sigara"
-                        value={value.sigara || ""}
-                        onChange={(val) => onChange({ ...value, sigara: val })}
-                        options={["Kullanmıyor", "Bırakmış", "1 Paket/Yıl", "5 Paket/Yıl", "10 Paket/Yıl", "20 Paket/Yıl", "30+ Paket/Yıl"]}
-                        placeholder="Paket/Yıl"
-                        disabled={readOnly}
-                    />
-                </div>
-                <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-600 font-medium uppercase min-w-[60px]">Alkol</span>
-                    <SystemQueryCombobox
-                        label="Alkol"
-                        value={value.alkol || ""}
-                        onChange={(val) => onChange({ ...value, alkol: val })}
-                        options={["Kullanmıyor", "Sosyal", "Haftada < 3 gün", "Haftada > 3 gün", "Hergün düzenli", "Alkolizm"]}
-                        placeholder="Seçiniz..."
-                        disabled={readOnly}
-                    />
-                </div>
+            <div className="space-y-2">
+                <SystemQueryCombobox
+                    label="SİGARA"
+                    value={value.sigara || ""}
+                    onChange={(val) => onChange({ ...value, sigara: val })}
+                    options={["Kullanmıyor", "Bırakmış", "1 Paket/Yıl", "5 Paket/Yıl", "10 Paket/Yıl", "20 Paket/Yıl", "30+ Paket/Yıl"]}
+                    placeholder="Paket/Yıl"
+                    disabled={readOnly}
+                />
+                <SystemQueryCombobox
+                    label="ALKOL"
+                    value={value.alkol || ""}
+                    onChange={(val) => onChange({ ...value, alkol: val })}
+                    options={["Kullanmıyor", "Sosyal", "Haftada < 3 gün", "Haftada > 3 gün", "Hergün düzenli", "Alkolizm"]}
+                    placeholder="Seçiniz..."
+                    disabled={readOnly}
+                />
             </div>
         </div>
     </div>

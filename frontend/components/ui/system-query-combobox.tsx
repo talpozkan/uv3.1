@@ -71,7 +71,7 @@ export const SystemQueryCombobox = React.memo(({
     return (
         <div className={cn("flex items-center justify-between gap-2 relative", disabled && "opacity-70 pointer-events-none")}>
             <Label className="text-[10px] font-bold text-slate-500 uppercase flex-1 leading-tight">{label}</Label>
-            <div className="relative w-[140px]" onClick={handleContainerClick}>
+            <div className="relative w-[180px]" onClick={handleContainerClick}>
                 <Input
                     ref={inputRef}
                     value={value === "Seçiniz..." ? "" : value}
@@ -91,7 +91,7 @@ export const SystemQueryCombobox = React.memo(({
                         }, 200);
                     }}
                     onKeyDown={handleKeyDown}
-                    className="h-7 text-[10px] bg-slate-50 border-slate-200 text-slate-700 px-2 pr-6 w-full font-mono cursor-pointer"
+                    className="h-8 text-[10px] bg-slate-50 border-slate-200 text-slate-700 px-2 pr-6 w-full font-normal cursor-pointer"
                     placeholder={placeholder || "Seçiniz..."}
                 />
 
@@ -120,14 +120,14 @@ export const SystemQueryCombobox = React.memo(({
 
                 {(isFocused || showSuggestions) && filteredOptions.length > 0 && (
                     <div className={cn(
-                        "absolute left-0 w-full z-50 bg-white border border-slate-200 rounded-md shadow-lg overflow-y-auto max-h-[150px]",
+                        "absolute left-0 w-full z-50 bg-white border border-slate-200 rounded-md shadow-lg",
                         openUpwards ? "bottom-full mb-1" : "top-full mt-1"
                     )}>
                         {filteredOptions.map((option, idx) => (
                             <div
                                 key={option}
                                 className={cn(
-                                    "px-2 py-1.5 text-[10px] text-slate-700 hover:bg-blue-100 cursor-pointer font-mono",
+                                    "px-2 py-1 text-[10px] text-slate-700 hover:bg-blue-100 cursor-pointer font-normal",
                                     idx === 0 && value && "bg-blue-50 font-bold" // Highlight first match
                                 )}
                                 onClick={() => {
